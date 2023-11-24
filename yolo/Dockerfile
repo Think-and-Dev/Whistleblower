@@ -22,6 +22,8 @@ COPY ./calculator.py .
 COPY ./opencv-rvv /usr/local/opencv-rvv
 COPY ./yolov5 /opt/cartesi/dapp/yolov5
 COPY ./best.pt .
+COPY ./images /opt/cartesi/dapp/images
+COPY ./.EasyOCR /home/dapp/.EasyOCR
 
 
 RUN ln -s /usr/lib/riscv64-linux-gnu/libtiff.so.5 /usr/lib/riscv64-linux-gnu/libtiff.so.6
