@@ -15,7 +15,7 @@ import traceback
 import logging
 import requests
 
-## DEFINE FUNCIOTNS -----------------------------
+## DEFINE FUNCTIONS -----------------------------
 def yolo(img):
     logger.info(f"--- Running yolo ---")
     import torch
@@ -23,7 +23,7 @@ def yolo(img):
     model = torch.hub.load('./yolov5', 'custom', path='best.pt', source='local', device='cpu')
     logger.info(f"--- load model ---")
     yolo_results = model([img], size=640)
-    logger.info(f"--- evaluete ---")
+    logger.info(f"--- evaluate ---")
     yolo_results.save()
     logger.info(f"--- yolo ---")
     return yolo_results

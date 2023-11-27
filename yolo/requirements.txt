@@ -9,7 +9,7 @@ pylibtiff==0.6.1
 pytesseract==0.3.10
 ninja==1.11.1
 scikit_image==0.22.0
-scypy==1.11.4
+scipy == 1.11.4
 easyocr==1.7.1
 ultralytics==8.0.216
 GitPython==3.1.40
