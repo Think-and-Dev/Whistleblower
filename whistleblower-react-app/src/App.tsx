@@ -46,9 +46,24 @@ const App: React.FC = () => {
           alignItems: "center",
         }}
       >
+        <Typography
+          variant="h5"
+          align="center"
+          style={{ marginTop: "20px", marginBottom: "20px", color: "#7f69a5" }}
+        >
+          WHISTLEBLOWER
+        </Typography>
         <div {...getRootProps()}>
           <input {...getInputProps()} />
-          <Button variant="outlined" component="span">
+          <Button
+            variant="outlined"
+            component="span"
+            style={{
+              color: "#7f69a5",
+              borderColor: "#7f69a5",
+              backgroundColor: "white",
+            }}
+          >
             Select Image
           </Button>
         </div>
@@ -58,15 +73,24 @@ const App: React.FC = () => {
             <img
               src={imageUrl}
               alt=""
-              style={{ maxWidth: "100%", maxHeight: "300px" }}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "300px",
+                border: "4px solid #414141",
+                borderRadius: "5px",
+              }}
             />
           </div>
         )}
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={handleUpload}
-          style={{ marginTop: "20px" }}
+          style={{
+            marginTop: "20px",
+            backgroundColor: "#7f69a5",
+            color: "white",
+          }}
         >
           Get plate!
         </Button>
