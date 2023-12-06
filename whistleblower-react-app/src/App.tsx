@@ -1,5 +1,5 @@
 import React from "react";
-import ImageLoad from "./components/input";
+import ImageLoad from "./components/LoadImage";
 
 const App: React.FC = () => {
   return (
