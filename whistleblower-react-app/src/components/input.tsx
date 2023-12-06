@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
 import { Button, Container, Typography, Paper } from "@mui/material";
-
+import HandleUpload from "../utils/HandleUpload";
 const API_URL = "http://localhost:3001";
 
 export default function ImageLoad() {
@@ -17,14 +17,15 @@ export default function ImageLoad() {
     setImageUrl(imageUrl);
   };
 
-  const handleUpload = async () => {
+  const handleClick = async () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append("file", selectedFile);
 
       try {
-        await axios.post(`${API_URL}/upload`, formData);
+        HandleUpload(imageUrl);
         console.log("Archivo enviado con éxito");
+        setImageUrl(null);
       } catch (error) {
         console.error("Error al enviar el archivo", error);
       }
@@ -85,7 +86,7 @@ export default function ImageLoad() {
         <Button
           variant="contained"
           color="secondary"
-          onClick={handleUpload}
+          onClick={handleClick}
           style={{
             marginTop: "20px",
             backgroundColor: "#7f69a5",
