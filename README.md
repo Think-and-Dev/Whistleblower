@@ -13,7 +13,9 @@ If you want to report a violation using the whistleblower application, follow th
 3. Use the "SELECT IMAGE" button to choose the photo of the vehicle you want to report.
 4. Click on the "GET PLATE!" button to send the image for processing.
 
-<img src="./assets/image.png" alt="image" width="400" />
+<img src="./docs/assets/images/app.png" alt="image" width="400" />
 
 Following these steps, the image is sent to the cartesi machine, where artificial intelligence models are used to detect the position of the license plate and extract the characters it contains.
 Once the request is processed, the cropped license plate image and the corresponding text of the characters found are returned to the user via the app.
+
+Documentation for developers available [here](./docs/index.md)
