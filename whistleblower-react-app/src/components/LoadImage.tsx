@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useDropzone } from "react-dropzone";
 import HandleUpload from "../utils/HandleUpload";
 import {
@@ -11,11 +10,9 @@ import {
 } from "@mui/material";
 import ShowResult from "./ShowResult";
 
-const API_URL = "http://localhost:3001";
-
 export default function ImageLoad() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imagen, setImagen] = useState<string>();
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false); // Nuevo estado para la carga
   const [processingMessage, setProcessingMessage] = useState<string>(""); // Nuevo estado para el mensaje de procesamiento
@@ -24,36 +21,52 @@ export default function ImageLoad() {
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     setSelectedFile(file);
-
-    const imageUrl = URL.createObjectURL(file);
-    setImageUrl(imageUrl);
+    const imagen = URL.createObjectURL(file);
+    setImagen(imagen);
   };
 
   const handleClick = async () => {
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
+    try {
+      console.log("Entre al try");
+      setLoading(true);
+      setProcessingMessage("Esto puede llevar algunos minutos...");
+      const fileContent = await readFileAsArrayBuffer(selectedFile);
+      const bytes = new Uint8Array(fileContent);
 
-      try {
-        HandleUpload(imageUrl);
-        console.log("Archivo enviado con éxito");
-        setImageUrl(null);
-        setLoading(true);
-        setProcessingMessage("Esto puede llevar algunos minutos...");
+      HandleUpload(bytes);
+      console.log("Archivo enviado con éxito");
 
-        // const response = await axios.post(`${API_URL}/upload`, formData);
-        console.log("Archivo enviado con éxito");
-
-        // setResult(response.data.result);
-        setShowOutput(true); // Muestra el componente Output después de obtener el resultado
-      } catch (error) {
-        console.error("Error al enviar el archivo", error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      console.warn("No se ha seleccionado ningún archivo");
+      setShowOutput(true); // Muestra el componente Output después de obtener el resultado
+    } catch (error) {
+      console.error("Error al enviar el archivo", error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const readFileAsArrayBuffer = (file: File | null): Promise<ArrayBuffer> => {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        reject(new Error("No se ha seleccionado ningún archivo"));
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        if (event.target && event.target.result) {
+          resolve(event.target.result as ArrayBuffer);
+        } else {
+          reject(new Error("Error al leer el archivo"));
+        }
+      };
+
+      reader.onerror = () => {
+        reject(new Error("Error al leer el archivo"));
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
   };
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -90,11 +103,11 @@ export default function ImageLoad() {
             Select Image
           </Button>
         </div>
-        {imageUrl && (
+        {imagen && (
           <div style={{ marginTop: "20px" }}>
             <Typography variant="body1">Image loaded:</Typography>
             <img
-              src={imageUrl}
+              src={imagen}
               alt=""
               style={{
                 maxWidth: "100%",
