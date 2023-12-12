@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import HandleUpload from "../utils/HandleUpload";
-import { Button, Typography, Paper, CircularProgress } from "@mui/material";
+import { Button, Typography, Paper, LinearProgress, Icon } from "@mui/material";
 import ShowResult from "./ShowResult";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import SendToMobile from "@mui/icons-material/SendToMobile";
+import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
 export default function ImageLoad() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagen, setImagen] = useState<string>();
   const [result, setResult] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Nuevo estado para la carga
-  const [processingMessage, setProcessingMessage] = useState<string>(""); // Nuevo estado para el mensaje de procesamiento
-  const [showOutput, setShowOutput] = useState<boolean>(false); // Nuevo estado para mostrar el componente Output
+  const [loading, setLoading] = useState<boolean>(false);
+  const [processingMessage, setProcessingMessage] = useState<string>("");
+  const [showOutput, setShowOutput] = useState<boolean>(false);
   const [showSelectImageButton, setShowSelectImageButton] =
     useState<boolean>(true);
+  const [progress, setProgress] = useState<number>(0);
+  const [showSendAnotherButton, setShowSendAnotherButton] =
+    useState<boolean>(false);
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -21,22 +27,48 @@ export default function ImageLoad() {
     setImagen(imagen);
   };
 
+  const handleSendAnotherImage = () => {
+    setImagen(undefined);
+    setResult(null);
+    setProgress(0);
+    setShowSelectImageButton(true);
+    setShowSendAnotherButton(false);
+    setShowOutput(false);
+  };
+
   const handleClick = async () => {
     try {
       setLoading(true);
+      setProgress(0);
       setProcessingMessage("This may take a few minutes...");
+
       const fileContent = await readFileAsArrayBuffer(selectedFile);
       const bytes = new Uint8Array(fileContent);
 
       HandleUpload(bytes);
-      console.log("Archivo enviado con éxito");
+      console.log("File successfully submitted");
 
-      setShowOutput(false); // Muestra el componente Output después de obtener el resultado
+      // Actualizar progreso gradualmente
+      const interval = setInterval(() => {
+        setProgress((prevProgress) =>
+          prevProgress >= 90 ? 100 : prevProgress + 10
+        );
+      }, 500);
+
+      // Simular proceso que tarda unos 8 segundos
+      await new Promise((resolve) => setTimeout(resolve, 8000));
+
+      // Limpiar intervalo y completar la barra de progreso
+      clearInterval(interval);
+      setProgress(100);
+
+      setShowOutput(true);
       setShowSelectImageButton(false);
     } catch (error) {
-      console.error("Error al enviar el archivo", error);
+      console.error("Error submitting the file", error);
     } finally {
       setLoading(false);
+      setShowSendAnotherButton(true);
     }
   };
 
@@ -66,6 +98,8 @@ export default function ImageLoad() {
   };
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  console.log("showOutput:", showOutput);
 
   return (
     <Paper
@@ -120,31 +154,80 @@ export default function ImageLoad() {
           style={{
             marginBottom: "10px",
             display: "flex",
-            alignItems: "center",
+            flexDirection: "column", // Columna para apilar verticalmente
+            alignItems: "center", // Alinea el contenido en el centro horizontalmente
+            textAlign: "center", // Alinea el texto en el centro horizontalmente
           }}
         >
-          <CircularProgress
-            size={24}
-            color="secondary"
-            style={{ marginRight: "10px" }}
+          {/* Barra de progreso */}
+          <LinearProgress
+            variant="determinate"
+            value={Math.min(100, Math.max(0, progress))}
+            style={{ marginBottom: "10px" }}
           />
+          {/* Iconos para diferentes estados en una fila */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "10px",
+            }}
+          >
+            <SendToMobile
+              color="action"
+              fontSize="small"
+              style={{
+                marginRight: "10px",
+                color: progress >= 30 ? "#4CAF50" : "",
+              }}
+            />
+            <HourglassEmptyIcon
+              color="action"
+              fontSize="small"
+              style={{
+                marginRight: "10px",
+                color: progress >= 60 ? "#4CAF50" : "",
+              }}
+            />
+            <CheckCircleOutline
+              color="action"
+              fontSize="small"
+              style={{ color: progress >= 90 ? "#4CAF50" : "" }}
+            />
+          </div>
           <Typography variant="body2">{processingMessage}</Typography>
         </div>
       )}
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handleClick}
-        style={{
-          marginTop: "20px",
-          backgroundColor: "#7f69a5",
-          color: "white",
-        }}
-      >
-        Get plate!
-      </Button>
-      {showOutput && <ShowResult result={result} />}{" "}
-      {/* Muestra el componente Output si showOutput es true */}
+
+      {!loading && showSelectImageButton && (
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleClick}
+          style={{
+            marginTop: "20px",
+            backgroundColor: "#7f69a5",
+            color: "white",
+          }}
+        >
+          Get plate!
+        </Button>
+      )}
+      {showOutput && <ShowResult result={result} />}
+      {showSendAnotherButton && (
+        <Button
+          variant="outlined"
+          onClick={handleSendAnotherImage}
+          style={{
+            marginTop: "20px",
+            backgroundColor: "white",
+            borderColor: "#7f69a5",
+            color: "#7f69a5",
+          }}
+        >
+          Send another image
+        </Button>
+      )}
     </Paper>
   );
 }

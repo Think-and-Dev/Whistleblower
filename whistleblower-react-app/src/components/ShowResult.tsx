@@ -26,7 +26,7 @@ const ShowResult: React.FC<OutputProps> = ({ result }) => {
         {result ? (
           <Typography variant="body1">{result}</Typography>
         ) : (
-          <Typography variant="body1">Waiting result...</Typography>
+          <Typography variant="body1">AB 123 CD</Typography>
         )}
       </Paper>
     </Container>
