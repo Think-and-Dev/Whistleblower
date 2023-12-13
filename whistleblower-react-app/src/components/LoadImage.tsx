@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import HandleUpload from "../utils/HandleUpload";
-import { Button, Typography, Paper, LinearProgress, Icon } from "@mui/material";
+import { Button, Typography, Paper, CircularProgress } from "@mui/material";
 import ShowResult from "./ShowResult";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import SendToMobile from "@mui/icons-material/SendToMobile";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
+import Badge from "@mui/material/Badge";
+import Popover from "@mui/material/Popover";
+import IconButton from "@mui/material/IconButton";
 
 export default function ImageLoad() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -19,6 +22,9 @@ export default function ImageLoad() {
   const [progress, setProgress] = useState<number>(0);
   const [showSendAnotherButton, setShowSendAnotherButton] =
     useState<boolean>(false);
+  const [transactionCompleted, setTransactionCompleted] =
+    useState<boolean>(false);
+  const [transactionId, setTransactionId] = useState<string | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -34,6 +40,18 @@ export default function ImageLoad() {
     setShowSelectImageButton(true);
     setShowSendAnotherButton(false);
     setShowOutput(false);
+    setTransactionCompleted(false);
+    setTransactionId(null);
+  };
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleBadgeClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
   };
 
   const handleClick = async () => {
@@ -45,8 +63,11 @@ export default function ImageLoad() {
       const fileContent = await readFileAsArrayBuffer(selectedFile);
       const bytes = new Uint8Array(fileContent);
 
-      HandleUpload(bytes);
-      console.log("File successfully submitted");
+      const hash = await HandleUpload(bytes);
+      console.log("File successfully submitted. Transaction ID:", hash);
+
+      setTransactionId(hash);
+      setTransactionCompleted(true);
 
       // Actualizar progreso gradualmente
       const interval = setInterval(() => {
@@ -99,7 +120,7 @@ export default function ImageLoad() {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  console.log("showOutput:", showOutput);
+  // console.log("showOutput:", showOutput);
 
   return (
     <Paper
@@ -153,18 +174,13 @@ export default function ImageLoad() {
         <div
           style={{
             marginBottom: "10px",
+            marginTop: "10px",
             display: "flex",
             flexDirection: "column", // Columna para apilar verticalmente
             alignItems: "center", // Alinea el contenido en el centro horizontalmente
             textAlign: "center", // Alinea el texto en el centro horizontalmente
           }}
         >
-          {/* Barra de progreso */}
-          <LinearProgress
-            variant="determinate"
-            value={Math.min(100, Math.max(0, progress))}
-            style={{ marginBottom: "10px" }}
-          />
           {/* Iconos para diferentes estados en una fila */}
           <div
             style={{
@@ -173,29 +189,169 @@ export default function ImageLoad() {
               marginBottom: "10px",
             }}
           >
-            <SendToMobile
-              color="action"
-              fontSize="small"
+            {transactionCompleted ? (
+              <Badge
+                color="secondary"
+                overlap="circular"
+                badgeContent={<span style={{ fontSize: 10 }}>i</span>}
+                onClick={handleBadgeClick}
+                style={{ marginRight: "20px" }}
+              >
+                <SendToMobile
+                  color={transactionCompleted ? "success" : ("action" as const)}
+                  fontSize="large"
+                  style={{
+                    marginBottom: "2px",
+                  }}
+                />
+              </Badge>
+            ) : (
+              <SendToMobile
+                color="inherit"
+                fontSize="large"
+                style={{
+                  marginBottom: "2px",
+                  marginRight: "20px",
+                }}
+              />
+            )}
+
+            <Popover
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={handleClosePopover}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+            >
+              <Typography style={{ padding: "10px" }}>
+                Tx: {transactionId}
+              </Typography>
+            </Popover>
+
+            <CircularProgress
+              color="inherit"
+              size={15}
               style={{
-                marginRight: "10px",
+                marginRight: "20px",
+                marginLeft: "20px",
+                marginTop: "10px",
                 color: progress >= 30 ? "#4CAF50" : "",
               }}
             />
             <HourglassEmptyIcon
               color="action"
-              fontSize="small"
+              fontSize="large"
               style={{
-                marginRight: "10px",
+                marginRight: "20px",
+                marginLeft: "20px",
+                marginTop: "2px",
+                color: progress >= 60 ? "#4CAF50" : "",
+              }}
+            />
+            <CircularProgress
+              color="inherit"
+              size={15}
+              style={{
+                marginRight: "20px",
+                marginLeft: "20px",
+                marginTop: "10px",
                 color: progress >= 60 ? "#4CAF50" : "",
               }}
             />
             <CheckCircleOutline
               color="action"
-              fontSize="small"
-              style={{ color: progress >= 90 ? "#4CAF50" : "" }}
+              fontSize="large"
+              style={{
+                marginLeft: "20px",
+                marginTop: "2px",
+                color: progress >= 90 ? "#4CAF50" : "",
+              }}
             />
           </div>
           <Typography variant="body2">{processingMessage}</Typography>
+        </div>
+      )}
+
+      {!loading && showOutput && (
+        <div
+          style={{
+            marginBottom: "10px",
+            marginTop: "10px",
+            display: "flex",
+            flexDirection: "column", // Columna para apilar verticalmente
+            alignItems: "center", // Alinea el contenido en el centro horizontalmente
+            textAlign: "center", // Alinea el texto en el centro horizontalmente
+          }}
+        >
+          {/* Iconos para diferentes estados en una fila */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "10px",
+            }}
+          >
+            <Badge
+              color="secondary"
+              overlap="circular"
+              badgeContent={<span style={{ fontSize: 10 }}>i</span>}
+              onClick={handleBadgeClick}
+              style={{ marginRight: "20px" }}
+            >
+              <SendToMobile
+                color={transactionCompleted ? "success" : ("action" as const)}
+                fontSize="large"
+                style={{
+                  marginBottom: "2px",
+                }}
+              />
+            </Badge>
+
+            <Popover
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={handleClosePopover}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+            >
+              <Typography style={{ padding: "10px" }}>
+                Tx: {transactionId}
+              </Typography>
+            </Popover>
+
+            <HourglassEmptyIcon
+              color="action"
+              fontSize="large"
+              style={{
+                marginRight: "20px",
+                marginLeft: "20px",
+                marginTop: "2px",
+                color: progress >= 60 ? "#4CAF50" : "",
+              }}
+            />
+
+            <CheckCircleOutline
+              color="action"
+              fontSize="large"
+              style={{
+                marginLeft: "20px",
+                marginTop: "2px",
+                color: progress >= 90 ? "#4CAF50" : "",
+              }}
+            />
+          </div>
         </div>
       )}
 
