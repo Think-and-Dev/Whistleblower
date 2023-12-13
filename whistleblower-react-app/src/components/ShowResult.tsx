@@ -1,11 +1,31 @@
 // src/components/output.tsx
 import React from "react";
 import { Typography, Container, Paper } from "@mui/material";
-
+import { useQuery, gql } from "@apollo/client";
 interface OutputProps {
   result: string | null;
 }
+const GET_DATA = gql(`
+  query {
+    notices {
+      edges {
+        node {
+          payload
+          index
+          input {
+            index
+            payload
+          }
+        }
+      }
+    }
+  }
+`);
 const ShowResult: React.FC<OutputProps> = ({ result }) => {
+  console.log("Voy a hacer la consulta");
+  const { loading, error, data } = useQuery(GET_DATA);
+  if (loading) return <p>Loading</p>;
+  if (error) return <p>Error: {error.message}</p>;
   return (
     <Container component="main" maxWidth="xs">
       <Paper
@@ -26,7 +46,9 @@ const ShowResult: React.FC<OutputProps> = ({ result }) => {
         {result ? (
           <Typography variant="body1">{result}</Typography>
         ) : (
-          <Typography variant="body1">AB 123 CD</Typography>
+          <Typography variant="body1">
+            {JSON.stringify(data, null, 2)}
+          </Typography>
         )}
       </Paper>
     </Container>
