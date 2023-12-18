@@ -1,11 +1,11 @@
 import React from "react";
-import ImageLoad from "./components/LoadImage";
+import ProcessPlate from "./components/ProcessPlate";
 import "./styles/styles.css";
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <ImageLoad />
+      <ProcessPlate />
     </div>
   );
 };

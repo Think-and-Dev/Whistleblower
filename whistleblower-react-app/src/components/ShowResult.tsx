@@ -2,6 +2,7 @@
 import React from "react";
 import { Typography, Container, Paper } from "@mui/material";
 import { useQuery, gql } from "@apollo/client";
+
 interface OutputProps {
   result: string | null;
 }
@@ -21,6 +22,7 @@ const GET_DATA = gql(`
     }
   }
 `);
+
 const ShowResult: React.FC<OutputProps> = ({ result }) => {
   console.log("Voy a hacer la consulta");
   const { loading, error, data } = useQuery(GET_DATA);
@@ -36,7 +38,7 @@ const ShowResult: React.FC<OutputProps> = ({ result }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          backgroundColor: "#7f69a5",
+          backgroundColor: "#47176a",
           color: "white",
         }}
       >
