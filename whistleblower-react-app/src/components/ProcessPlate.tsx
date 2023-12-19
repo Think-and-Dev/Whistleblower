@@ -3,19 +3,25 @@ import { useDropzone } from "react-dropzone";
 import HandleUpload from "../utils/HandleUpload";
 import { Button, Typography, Paper, CircularProgress } from "@mui/material";
 import ShowResult from "./ShowResult";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import RenderIcons from "./RenderIcons";
+import ProgressDisplay from "./ProgressDisplay";
+import CropImage from "./CropImage";
+import {
+  createTheme,
+  PaletteOptions,
+  CommonColors,
+  ThemeProvider,
+} from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#5b1092",
+      main: "#7b3888",
     },
     secondary: {
-      main: "#696969",
+      main: "#808080",
     },
     success: {
-      main: "#fc791e",
+      main: "#f37536",
     },
   },
 });
@@ -35,6 +41,12 @@ export default function ProcessPlate() {
   const [transactionCompleted, setTransactionCompleted] =
     useState<boolean>(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
+  const [coordinates, setCoordinates] = useState<number[]>([
+    330,
+    355,
+    558 - 330,
+    430 - 355,
+  ]);
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -171,7 +183,7 @@ export default function ProcessPlate() {
           </div>
         )}
         {(loading || (!loading && showOutput)) && (
-          <RenderIcons
+          <ProgressDisplay
             loading={loading}
             showOutput={showOutput}
             progress={progress}
@@ -181,7 +193,6 @@ export default function ProcessPlate() {
             processingMessage={processingMessage}
           />
         )}
-
         {!loading && showSelectImageButton && (
           <Button
             variant="contained"
@@ -198,6 +209,9 @@ export default function ProcessPlate() {
         )}
         {showOutput && <ShowResult result={result} />}
 
+        {imagen && showOutput && (
+          <CropImage image={imagen} coordinates={coordinates} />
+        )}
         {showSendAnotherButton && (
           <Button
             variant="outlined"

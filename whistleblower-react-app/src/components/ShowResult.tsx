@@ -38,7 +38,7 @@ const ShowResult: React.FC<OutputProps> = ({ result }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          backgroundColor: "#47176a",
+          backgroundColor: "#7b3888",
           color: "white",
         }}
       >
