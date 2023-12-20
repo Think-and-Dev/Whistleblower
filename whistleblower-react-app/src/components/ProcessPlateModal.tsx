@@ -26,10 +26,10 @@ const theme = createTheme({
   },
 });
 
-export default function ProcessPlate() {
+export default function ProcessPlateModal() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagen, setImagen] = useState<string>();
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<Array<String> | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [processingMessage, setProcessingMessage] = useState<string>("");
   const [showOutput, setShowOutput] = useState<boolean>(false);
@@ -47,7 +47,7 @@ export default function ProcessPlate() {
     558 - 330,
     430 - 355,
   ]);
-
+  const [input, setInput] = useState<number | undefined>(0);
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     setSelectedFile(file);
@@ -75,12 +75,14 @@ export default function ProcessPlate() {
       const fileContent = await readFileAsArrayBuffer(selectedFile);
       const bytes = new Uint8Array(fileContent);
 
-      const hash = await HandleUpload(bytes);
+      const { hash, input } = await HandleUpload(bytes);
       console.log("File successfully submitted. Transaction ID:", hash);
+
+      console.log(input.input_index);
 
       setTransactionId(hash);
       setTransactionCompleted(true);
-
+      setInput(input.input_index);
       // Actualizar progreso gradualmente
       const interval = setInterval(() => {
         setProgress((prevProgress) =>
@@ -94,7 +96,7 @@ export default function ProcessPlate() {
       // Limpiar intervalo y completar la barra de progreso
       clearInterval(interval);
       setProgress(100);
-
+      //TODO Pegarle a la blockchain cuando tenga la notice valida.
       setShowOutput(true);
       setShowSelectImageButton(false);
     } catch (error) {
@@ -207,11 +209,11 @@ export default function ProcessPlate() {
             Get plate!
           </Button>
         )}
-        {showOutput && <ShowResult result={result} />}
+        {showOutput && <ShowResult imagen={imagen} input={input} />}
 
-        {imagen && showOutput && (
+        {/* {imagen && showOutput && (
           <CropImage image={imagen} coordinates={coordinates} />
-        )}
+        )} */}
         {showSendAnotherButton && (
           <Button
             variant="outlined"

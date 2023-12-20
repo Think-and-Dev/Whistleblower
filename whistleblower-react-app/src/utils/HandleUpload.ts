@@ -1,6 +1,8 @@
-import { ethers } from "ethers";
+import { ContractReceipt, ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { InputBox__factory } from "@cartesi/rollups";
+import { InputAddedEvent } from "@cartesi/rollups/dist/src/types/contracts/inputs/IInputBox";
+import { InputKeys } from "../commands/types";
 
 const HARDHAT_LOCALHOST_RPC_URL = "http://localhost:8545";
 const HARDHAT_DEFAULT_MNEMONIC =
@@ -8,7 +10,21 @@ const HARDHAT_DEFAULT_MNEMONIC =
 const INPUTBOX_ADDRESS = "0x59b22D57D4f067708AB0c00552767405926dc768";
 const DAPP_ADDRESS = "0x70ac08179605af2d9e75782b8decdd3c22aa4d0c";
 const accountIndex = 0;
+export const getInputKeys = (receipt: ContractReceipt): InputKeys => {
+  // get InputAddedEvent from transaction receipt
+  const event = receipt.events?.find((e) => e.event === "InputAdded");
+  console.log(event);
+  if (!event) {
+    throw new Error(
+      `InputAdded event not found in receipt of transaction ${receipt.transactionHash}`
+    );
+  }
 
+  const inputAdded = event as InputAddedEvent;
+  return {
+    input_index: inputAdded.args.inputIndex.toNumber(),
+  };
+};
 export default async function HandleUpload(imageUrl: any) {
   const sendInput = async () => {
     try {
@@ -25,8 +41,12 @@ export default async function HandleUpload(imageUrl: any) {
       console.log(`Se envió la transacción: ${tx.hash}`);
       console.log("Esperando confirmación de la tx...");
       const receipt = await tx.wait(1);
+      // const received = await provider.getTransactionReceipt(tx.hash);
+      // console.log(received);
+      const inputKeys = getInputKeys(receipt);
       const event = receipt.events?.find((e) => e.event === "InputAdded");
-      return tx.hash;
+      // console.log(inputKeys);
+      return { hash: tx.hash, input: inputKeys };
     } catch (error) {
       console.error("Error al enviar la transacción", error);
       throw error;

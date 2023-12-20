@@ -1,11 +1,11 @@
 import React from "react";
-import ProcessPlate from "./components/ProcessPlate";
+import ProcessPlateModal from "./components/ProcessPlateModal";
 import "./styles/styles.css";
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <ProcessPlate />
+      <ProcessPlateModal />
     </div>
   );
 };
