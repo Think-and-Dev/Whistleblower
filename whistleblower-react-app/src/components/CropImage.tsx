@@ -19,7 +19,9 @@ const CropImage: React.FC<{
           return;
         }
 
-        const [x, y, width, height] = coordinates;
+        const [x, y, x2, y2] = coordinates;
+        const width = x2 - x;
+        const height = y2 - y;
         canvas.width = width;
         canvas.height = height;
 
@@ -37,7 +39,9 @@ const CropImage: React.FC<{
   }, [image, coordinates]);
 
   return (
-    <div style={{ marginTop: "20px" }}>
+    <div
+      style={{ marginTop: "20px", display: "flex", justifyContent: "center" }}
+    >
       {croppedImage && (
         <img
           src={croppedImage}

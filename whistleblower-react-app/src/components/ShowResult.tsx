@@ -42,13 +42,16 @@ const ShowResult: React.FC<OutputProps> = ({ imagen, input }) => {
     }
   );
   useEffect(() => {
-    startPolling(30000);
+    startPolling(20000);
+    console.log(`empece a hacer polling ${loading}`);
     return () => {
       stopPolling();
+      console.log("Pare el polling");
     };
-  }, [stopPolling, startPolling]);
+  }, [stopPolling, startPolling, loading]);
   useEffect(() => {
-    if (!loading || error || !data) {
+    if (loading || error || !data) {
+      console.log("hay algun error", loading, error, data);
       return;
     }
     const payloadHex = data.input?.notices?.edges[0]?.node?.payload;
@@ -65,7 +68,7 @@ const ShowResult: React.FC<OutputProps> = ({ imagen, input }) => {
       stopPolling();
     }
   }, [loading, error, data, setPatente, setBox, stopPolling]);
-
+  console.log(patente, box);
   if (!patente && !box) return <p>Processing...</p>;
   if (error) return <p>Error: {error.message}</p>;
   // TODOuseEffect
