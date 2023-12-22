@@ -5,7 +5,7 @@
 The following project focuses on the development of an advanced image recognition system with artificial intelligence (AI) capabilities, integrated into the Cartesi infrastructure.
 This project is being carried out by a team from [Think and Dev](https://thinkanddev.com/), a pioneering technology company focused on the development of highly complex systems using blockchain and AI.
 
-**Whistleblower** is a decentralized application implemented using [Cartesi Rollups](https://github.com/cartesi/rollups)
+**Whistleblower** is a decentralized application implemented using [Cartesi Rollups](https://github.com/cartesi/rollups) and was developed as part of Cartesi's grants program. You can find our comprehensive proposal by following this [link](https://governance.cartesi.io/t/ai-powered-system-for-detecting-license-plate-violations-on-vehicles/206/1).
 
 ## Project Description
 
@@ -43,31 +43,3 @@ In the future, the following steps will be included to complete the process:
 9. Once the final results are obtained, the Notice is confirmed on-chain.
 
 At a future stage, a voucher could be created that adds the user’s wallet to a smart contract, ensuring that, when the offender pays, payment is received directly by the complainant with an on-chain protocol. Using cartesi vouchers, it could be possible to interact with base chain to ensure that the payment flow of the fine is also recorded on-chain.
-
-## How to run Whistleblower locally
-
-We based our code on Cartesi rollup examples. To run Whistleblower, follow the steps below:
-
-1. Clone the Cartesi [rollups examples](https://github.com/cartesi/rollups-examples) repository.
-2. Clone the [Whistpleblower](https://github.com/Think-and-Dev/Whistleblower.git) repository.
-3. Copy into rollups examples the folder ...(nuestro codigo)
-4. Build de Whistleblower Dapp
-
-```
-docker buildx bake --load
-```
-
-5. Run the application starting an environment that includes a local blockchain with the Cartesi smart contracts deployed, as well as a Cartesi L2 node executing the dApp's back-end logic.
-
-```
-docker compose -f ../docker-compose.yml -f ./docker-compose.override.yml up
-```
-
-6. Navigate to the Whistleblower/frontend directory and build the frontend console application
-
-```
-npm inatall
-npm start
-```
-
-7. To interact with the application, open your web browser and enter `localhost:3000` in the address bar.
