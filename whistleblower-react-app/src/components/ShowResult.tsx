@@ -6,11 +6,10 @@ import { ethers } from "ethers";
 import CropImage from "./CropImage";
 
 interface OutputProps {
-  imagen: string | undefined;
-  input: number | undefined;
+  image: string | undefined;
+  inputIndex: number | undefined;
   setProgress: (progress: number) => void;
 }
-const inputIndex = 0;
 const GET_DATA = gql(`
 query GetNotice($inputIndex:Int!){
   input(index:$inputIndex){
@@ -29,30 +28,34 @@ query GetNotice($inputIndex:Int!){
 }
 `);
 
-const ShowResult: React.FC<OutputProps> = ({ imagen, input, setProgress }) => {
-  const [patente, setPatente] = useState<string | undefined>();
+const ShowResult: React.FC<OutputProps> = ({
+  image,
+  inputIndex,
+  setProgress,
+}) => {
+  const [plate, setPlate] = useState<string | undefined>();
   const [box, setBox] = useState<number[] | undefined>();
 
-  console.log(`Voy a hacer la consulta del indice: ${input}`);
-  const index = input ? input : "undefined";
-  console.log(index);
+  console.log(`The input index is: ${inputIndex}`);
+  // const index = input;
+  // ? input : "undefined";
+  // console.log(index);
   const { loading, error, data, stopPolling, startPolling } = useQuery(
     GET_DATA,
     {
-      variables: { inputIndex: index },
+      variables: { inputIndex: inputIndex },
     }
   );
   useEffect(() => {
     startPolling(20000);
-    console.log(`empece a hacer polling ${loading}`);
+    console.log(`Polling started. Loading: ${loading}`);
     return () => {
       stopPolling();
-      console.log("Pare el polling");
+      console.log("Polling stopped");
     };
   }, [stopPolling, startPolling, loading]);
   useEffect(() => {
     if (loading || error || !data) {
-      console.log("hay algun error", loading, error, data);
       return;
     }
     const payloadHex = data.input?.notices?.edges[0]?.node?.payload;
@@ -60,28 +63,21 @@ const ShowResult: React.FC<OutputProps> = ({ imagen, input, setProgress }) => {
       const payload = ethers.utils.toUtf8String(payloadHex);
       console.log(payload);
       const rta = JSON.parse(payload);
-      const obtenerPatente = () =>
-        rta && rta.patente !== "" ? rta.patente : "No plate detected";
-      setPatente(obtenerPatente());
-      console.log("aca entre");
+      const getPlate = () =>
+        rta && rta.plate !== "" ? rta.plate : "No plate detected";
+      setPlate(getPlate());
       setBox(rta.box);
       console.log(rta.box);
       stopPolling();
       setProgress(100);
     }
-  }, [loading, error, data, setPatente, setBox, stopPolling]);
-  console.log(patente, box);
-  if (!patente && !box) return <p>Processing...</p>;
+  }, [loading, error, data, setPlate, setBox, stopPolling]);
+  // console.log(plate, box);
+  if (!plate && !box) return <p>Processing... This may take a few minutes</p>;
   if (error) return <p>Error: {error.message}</p>;
-  // TODOuseEffect
-  // console.log(data);
-  // const notices = data.input.notices.edges[0].node.payload;
-  // console.log(notices);
-  // const firstNotice = notices;
-  // const payloadHex = firstNotice;
   return (
     <Container component="main" maxWidth="xs">
-      {imagen && box && <CropImage image={imagen} coordinates={box} />}
+      {image && box && <CropImage image={image} coordinates={box} />}
       <Paper
         elevation={3}
         style={{
@@ -100,7 +96,7 @@ const ShowResult: React.FC<OutputProps> = ({ imagen, input, setProgress }) => {
         {/* {result ? ( */}
         {/* <Typography variant="body1">{result}</Typography> */}
         {/* ) : ( */}
-        <Typography variant="body1">{patente}</Typography>
+        <Typography variant="body1">{plate}</Typography>
         {/* )} */}
       </Paper>
     </Container>

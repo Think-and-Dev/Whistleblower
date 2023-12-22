@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import HandleUpload from "../utils/HandleUpload";
-import { Button, Typography, Paper, CircularProgress } from "@mui/material";
+import { Button, Typography, Paper } from "@mui/material";
 import ShowResult from "./ShowResult";
 import ProgressDisplay from "./ProgressDisplay";
-import CropImage from "./CropImage";
-import {
-  createTheme,
-  PaletteOptions,
-  CommonColors,
-  ThemeProvider,
-} from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
@@ -28,7 +22,7 @@ const theme = createTheme({
 
 export default function ProcessPlateModal() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imagen, setImagen] = useState<string>();
+  const [image, setImage] = useState<string>();
   const [result, setResult] = useState<Array<String> | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [processingMessage, setProcessingMessage] = useState<string>("");
@@ -41,22 +35,22 @@ export default function ProcessPlateModal() {
   const [transactionCompleted, setTransactionCompleted] =
     useState<boolean>(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
-  const [coordinates, setCoordinates] = useState<number[]>([
-    330,
-    355,
-    558 - 330,
-    430 - 355,
-  ]);
+  // const [coordinates, setCoordinates] = useState<number[]>([
+  //   330,
+  //   355,
+  //   558 - 330,
+  //   430 - 355,
+  // ]);
   const [input, setInput] = useState<number | undefined>(0);
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     setSelectedFile(file);
-    const imagen = URL.createObjectURL(file);
-    setImagen(imagen);
+    const image = URL.createObjectURL(file);
+    setImage(image);
   };
 
   const handleSendAnotherImage = () => {
-    setImagen(undefined);
+    setImage(undefined);
     setSelectedFile(null);
     setResult(null);
     setProgress(0);
@@ -70,6 +64,7 @@ export default function ProcessPlateModal() {
   const handleClick = async () => {
     try {
       setShowSelectImageButton(false);
+      setShowSendAnotherButton(true);
       setLoading(true);
       setProgress(0);
       setProcessingMessage("This may take a few minutes...");
@@ -80,31 +75,14 @@ export default function ProcessPlateModal() {
       const { hash, input } = await HandleUpload(bytes);
       console.log("File successfully submitted. Transaction ID:", hash);
 
-      console.log(input.input_index);
-
       setTransactionId(hash);
       setTransactionCompleted(true);
       setShowOutput(true);
       setInput(input.input_index);
-      // Actualizar progreso gradualmente
-      // const interval = setInterval(() => {
-      //   setProgress((prevProgress) =>
-      //     prevProgress >= 90 ? 100 : prevProgress + 10
-      //   );
-      // }, 500);
-
-      // // Simular proceso que tarda unos 8 segundos
-      // await new Promise((resolve) => setTimeout(resolve, 8000));
-
-      // // Limpiar intervalo y completar la barra de progreso
-      // clearInterval(interval);
-      // setProgress(100);
-      //TODO Pegarle a la blockchain cuando tenga la notice valida.
     } catch (error) {
       console.error("Error submitting the file", error);
     } finally {
       setLoading(false);
-      setShowSendAnotherButton(true);
     }
   };
 
@@ -171,10 +149,10 @@ export default function ProcessPlateModal() {
             </Button>
           )}
         </div>
-        {imagen && (
+        {image && (
           <div style={{ marginTop: "20px" }}>
             <img
-              src={imagen}
+              src={image}
               alt=""
               style={{
                 maxWidth: "100%",
@@ -201,6 +179,7 @@ export default function ProcessPlateModal() {
             variant="contained"
             color="primary"
             onClick={handleClick}
+            disabled={!selectedFile}
             style={{
               marginTop: "20px",
               backgroundColor: "primary",
@@ -211,16 +190,18 @@ export default function ProcessPlateModal() {
           </Button>
         )}
         {showOutput && (
-          <ShowResult imagen={imagen} input={input} setProgress={setProgress} />
+          <ShowResult
+            image={image}
+            inputIndex={input}
+            setProgress={setProgress}
+          />
         )}
 
-        {/* {imagen && showOutput && (
-          <CropImage image={imagen} coordinates={coordinates} />
-        )} */}
         {showSendAnotherButton && (
           <Button
             variant="outlined"
             onClick={handleSendAnotherImage}
+            disabled={progress !== 100}
             style={{
               marginTop: "20px",
               backgroundColor: "white",

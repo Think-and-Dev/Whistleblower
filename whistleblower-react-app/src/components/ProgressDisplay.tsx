@@ -119,13 +119,13 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
           marginTop: "10px",
         }}
       >
-        {/* ICONO CAMARA */}
+        {/* CAMERA ICON */}
         <CustomBadge
           icon={<PhotoCameraIcon fontSize="large" color="primary" />}
           popoverContent="Image has been selected, let the game begin..."
           showBadge={transactionCompleted ? true : true}
         />
-        {/* PRIMER CIRCULAR PROGRESS */}
+        {/* FIRST CIRCULAR PROGRESS */}
         <div
           style={{
             display: "flex",
@@ -159,7 +159,7 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
             />
           )}
         </div>
-        {/* ICONO MOVIL */}
+        {/* CLOUD ICON */}
         <CustomBadge
           icon={
             transactionCompleted ? (
@@ -171,7 +171,7 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
           popoverContent={`Now you can track your transaction\n${transactionId}`}
           showBadge={transactionCompleted ? true : false}
         />
-        {/* SEGUNDO CIRCULAR PROGRESS */}
+        {/* SECOND CIRCULAR PROGRESS */}
         <div
           style={{
             display: "flex",
@@ -205,7 +205,7 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
             />
           )}
         </div>
-        {/*  ICONO RELOJ DE ARENA */}
+        {/*  ENGINEERING ICON */}
         <CustomBadge
           icon={
             progress >= 60 ? (
@@ -217,7 +217,7 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
           popoverContent={`Processing image`}
           showBadge={progress >= 60 ? true : false}
         />
-        {/* TERCER CIRCULAR PROGRESS */}
+        {/* THIRD CIRCULAR PROGRESS */}
         <div
           style={{
             display: "flex",
@@ -251,7 +251,7 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
             />
           )}
         </div>
-        {/* ICONO CHECK */}
+        {/* CHECK ICON */}
         <CustomBadge
           icon={
             progress === 100 ? (
@@ -264,8 +264,6 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
           showBadge={progress === 100 ? true : false}
         />
       </div>
-
-      {loading && <Typography variant="body2">{processingMessage}</Typography>}
     </div>
   );
 };
