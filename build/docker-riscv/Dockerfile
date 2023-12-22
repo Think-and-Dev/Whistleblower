@@ -2,7 +2,7 @@
 # layers for caching and versioning
 FROM cartesi/toolchain:0.15.0 as toolchain
 FROM cartesi/server-manager:0.8.2 as server-manager
-FROM cartesi/rollups-hardhat:1.0.0 as rollups-hardhat
+FROM cartesi/rollups-hardhat:1.0.2 as rollups-hardhat
 
 
 # stage to download dependencies
