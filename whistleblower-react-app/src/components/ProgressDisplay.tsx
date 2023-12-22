@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Typography, CircularProgress } from "@mui/material";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import SendToMobile from "@mui/icons-material/SendToMobile";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import Badge from "@mui/material/Badge";
 import Popover from "@mui/material/Popover";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import Engineering from "@mui/icons-material/Engineering";
+import { CloudUpload } from "@mui/icons-material";
+// import { Engineering } from "@mui/icons-material";
 
 interface RenderIconsProps {
   loading: boolean;
@@ -121,7 +122,7 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
         {/* ICONO CAMARA */}
         <CustomBadge
           icon={<PhotoCameraIcon fontSize="large" color="primary" />}
-          popoverContent="Your image has been sent, let the game begin..."
+          popoverContent="Image has been selected, let the game begin..."
           showBadge={transactionCompleted ? true : true}
         />
         {/* PRIMER CIRCULAR PROGRESS */}
@@ -162,9 +163,9 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
         <CustomBadge
           icon={
             transactionCompleted ? (
-              <SendToMobile fontSize="large" color="primary" />
+              <CloudUpload fontSize="large" color="primary" />
             ) : (
-              <SendToMobile fontSize="large" color="secondary" />
+              <CloudUpload fontSize="large" color="secondary" />
             )
           }
           popoverContent={`Now you can track your transaction\n${transactionId}`}
@@ -208,12 +209,12 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
         <CustomBadge
           icon={
             progress >= 60 ? (
-              <HourglassEmptyIcon fontSize="large" color="primary" />
+              <Engineering fontSize="large" color="primary" />
             ) : (
-              <HourglassEmptyIcon fontSize="large" color="secondary" />
+              <Engineering fontSize="large" color="secondary" />
             )
           }
-          popoverContent={`Texto 3...`}
+          popoverContent={`Processing image`}
           showBadge={progress >= 60 ? true : false}
         />
         {/* TERCER CIRCULAR PROGRESS */}
@@ -242,7 +243,7 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
           ) : (
             <ArrowRightAltIcon
               fontSize="medium"
-              color={!showOutput ? "secondary" : ("primary" as const)}
+              color={progress !== 100 ? "secondary" : ("primary" as const)}
               style={{
                 marginRight: "10px",
                 marginLeft: "10px",
@@ -253,14 +254,14 @@ const ProgressDisplay: React.FC<RenderIconsProps> = ({
         {/* ICONO CHECK */}
         <CustomBadge
           icon={
-            showOutput ? (
+            progress === 100 ? (
               <CheckCircleOutline fontSize="large" color="primary" />
             ) : (
               <CheckCircleOutline fontSize="large" color="secondary" />
             )
           }
-          popoverContent={`Texto 4`}
-          showBadge={showOutput ? true : false}
+          popoverContent={`License Plate process has been completed`}
+          showBadge={progress === 100 ? true : false}
         />
       </div>
 

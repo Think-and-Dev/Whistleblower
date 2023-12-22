@@ -8,6 +8,7 @@ import CropImage from "./CropImage";
 interface OutputProps {
   imagen: string | undefined;
   input: number | undefined;
+  setProgress: (progress: number) => void;
 }
 const inputIndex = 0;
 const GET_DATA = gql(`
@@ -28,7 +29,7 @@ query GetNotice($inputIndex:Int!){
 }
 `);
 
-const ShowResult: React.FC<OutputProps> = ({ imagen, input }) => {
+const ShowResult: React.FC<OutputProps> = ({ imagen, input, setProgress }) => {
   const [patente, setPatente] = useState<string | undefined>();
   const [box, setBox] = useState<number[] | undefined>();
 
@@ -66,6 +67,7 @@ const ShowResult: React.FC<OutputProps> = ({ imagen, input }) => {
       setBox(rta.box);
       console.log(rta.box);
       stopPolling();
+      setProgress(100);
     }
   }, [loading, error, data, setPatente, setBox, stopPolling]);
   console.log(patente, box);
@@ -79,6 +81,7 @@ const ShowResult: React.FC<OutputProps> = ({ imagen, input }) => {
   // const payloadHex = firstNotice;
   return (
     <Container component="main" maxWidth="xs">
+      {imagen && box && <CropImage image={imagen} coordinates={box} />}
       <Paper
         elevation={3}
         style={{
@@ -92,7 +95,7 @@ const ShowResult: React.FC<OutputProps> = ({ imagen, input }) => {
         }}
       >
         <Typography variant="h6" align="center">
-          Licence plate detected:
+          License plate detected:
         </Typography>
         {/* {result ? ( */}
         {/* <Typography variant="body1">{result}</Typography> */}
@@ -100,7 +103,6 @@ const ShowResult: React.FC<OutputProps> = ({ imagen, input }) => {
         <Typography variant="body1">{patente}</Typography>
         {/* )} */}
       </Paper>
-      {imagen && box && <CropImage image={imagen} coordinates={box} />}
     </Container>
   );
 };

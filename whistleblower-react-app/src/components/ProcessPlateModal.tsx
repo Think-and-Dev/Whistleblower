@@ -57,6 +57,7 @@ export default function ProcessPlateModal() {
 
   const handleSendAnotherImage = () => {
     setImagen(undefined);
+    setSelectedFile(null);
     setResult(null);
     setProgress(0);
     setShowSelectImageButton(true);
@@ -68,10 +69,11 @@ export default function ProcessPlateModal() {
 
   const handleClick = async () => {
     try {
+      setShowSelectImageButton(false);
       setLoading(true);
       setProgress(0);
       setProcessingMessage("This may take a few minutes...");
-
+      if (!selectedFile) throw new Error("No image selected!");
       const fileContent = await readFileAsArrayBuffer(selectedFile);
       const bytes = new Uint8Array(fileContent);
 
@@ -82,23 +84,22 @@ export default function ProcessPlateModal() {
 
       setTransactionId(hash);
       setTransactionCompleted(true);
+      setShowOutput(true);
       setInput(input.input_index);
       // Actualizar progreso gradualmente
-      const interval = setInterval(() => {
-        setProgress((prevProgress) =>
-          prevProgress >= 90 ? 100 : prevProgress + 10
-        );
-      }, 500);
+      // const interval = setInterval(() => {
+      //   setProgress((prevProgress) =>
+      //     prevProgress >= 90 ? 100 : prevProgress + 10
+      //   );
+      // }, 500);
 
-      // Simular proceso que tarda unos 8 segundos
-      await new Promise((resolve) => setTimeout(resolve, 8000));
+      // // Simular proceso que tarda unos 8 segundos
+      // await new Promise((resolve) => setTimeout(resolve, 8000));
 
-      // Limpiar intervalo y completar la barra de progreso
-      clearInterval(interval);
-      setProgress(100);
+      // // Limpiar intervalo y completar la barra de progreso
+      // clearInterval(interval);
+      // setProgress(100);
       //TODO Pegarle a la blockchain cuando tenga la notice valida.
-      setShowOutput(true);
-      setShowSelectImageButton(false);
     } catch (error) {
       console.error("Error submitting the file", error);
     } finally {
@@ -209,7 +210,9 @@ export default function ProcessPlateModal() {
             Get plate!
           </Button>
         )}
-        {showOutput && <ShowResult imagen={imagen} input={input} />}
+        {showOutput && (
+          <ShowResult imagen={imagen} input={input} setProgress={setProgress} />
+        )}
 
         {/* {imagen && showOutput && (
           <CropImage image={imagen} coordinates={coordinates} />
