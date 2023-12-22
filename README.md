@@ -18,4 +18,4 @@ If you want to report a violation using the whistleblower application, follow th
 Following these steps, the image is sent to the cartesi machine, where artificial intelligence models are used to detect the position of the license plate and extract the characters it contains.
 Once the request is processed, the cropped license plate image and the corresponding text of the characters found are returned to the user via the app.
 
-Documentation for developers available [here](./docs/index.md)
+Documentation for developers available [here](./docs/README.md)
