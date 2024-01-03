@@ -5,7 +5,6 @@
 import argparse
 import os
 import time
-# from loguru import logger
 
 import cv2
 
@@ -85,7 +84,6 @@ class Predictor(object):
 
     def inference(self, img):
         import numpy as np
-        # modifico la funcion para que lea la imegan de una variable.
         img_info = {"id": 0}
 
         imgnp=np.frombuffer(img,np.uint8)
@@ -129,23 +127,14 @@ class Predictor(object):
         output = output.cpu()
 
         bboxes = output[:, 0:4]
-        # preprocessing: resize
         bboxes /= ratio
 
-        # cls = output[:, 6]
-        # scores = output[:, 4] * output[:, 5]
-
-        # vis_res = vis(img, bboxes, scores, cls, cls_conf, self.cls_names)
-        # with open('bboxes.txt','w') as boxes:
-            # boxes.write(str(bboxes))
         return bboxes
 
 
 def image_demo(predictor, img):
         outputs, img_info = predictor.inference(img)
         return predictor.get_box(outputs[0], img_info, predictor.confthre)
-        # comando=f'python tools/yolo_plate.py image -f ./yolox_voc_nano.py -c ./best_ckpt.pth  
-        # --path ./input.jpg --conf 0.25 --nms 0.45 --tsize 416 --device cpu'
 
 def process_image(img):
     exp = get_exp('./yolox_voc_nano.py', None)
@@ -184,16 +173,12 @@ def main(exp, args):
     model = exp.get_model()
     model.eval()
 
-    # if not args.trt:
     if args.ckpt is None:
         ckpt_file = os.path.join(file_name, "best_ckpt.pth")
     else:
         ckpt_file = args.ckpt
-    # logger.info("loading checkpoint")
     ckpt = torch.load(ckpt_file, map_location="cpu")
-    # load the model state dict
     model.load_state_dict(ckpt["model"])
-    # logger.info("loaded checkpoint done.")
 
     trt_file = None
     decoder = None
@@ -207,8 +192,6 @@ def main(exp, args):
     else:
         print('You must use "image" as the first option for running the plate detection model')
         exit
-    # elif args.demo == "video" or args.demo == "webcam":
-        # imageflow_demo(predictor, vis_folder, current_time, args)
 
 
 if __name__ == "__main__":

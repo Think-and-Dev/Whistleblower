@@ -11,13 +11,13 @@ variable "DOCKER_ORGANIZATION" {
 }
 
 target "server" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:pruebas-${TAG}-server"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:whistleblower-${TAG}-server"]
 }
 
 target "console" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:pruebas-${TAG}-console"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:whistleblower-${TAG}-console"]
 }
 
 target "machine" {
-  tags = ["${DOCKER_ORGANIZATION}/dapp:pruebas-${TAG}-machine"]
+  tags = ["${DOCKER_ORGANIZATION}/dapp:whistleblower-${TAG}-machine"]
 }

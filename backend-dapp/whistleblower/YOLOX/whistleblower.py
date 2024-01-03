@@ -87,21 +87,10 @@ def handle_advance(data):
         logger.info(f"Received input: {input}")
         logger.info(f"Input length: {len(input)}")
         color_image = decode_image(input)
-        # print(type(color_image))
-        # color_image.save('input.jpg')
-        # comando=f'python tools/yolo_plate.py image -f ./yolox_voc_nano.py -c ./best_ckpt.pth  --path ./input.jpg --conf 0.25 --nms 0.45 --tsize 416 --device cpu'
-        # os.system(comando)
+
         first_vector_list=process_image(input)
-        # if not(os.path.exists('bboxes.txt') and os.path.getsize('bboxes.txt')>0):
-        #     raise Exception("No box found for license plate recognition")
-        # with open('bboxes.txt', 'r') as file:
-            # content = file.read()
-        # start_index = content.find('[')
-        # end_index = content.find(']', start_index) + 1
-        # first_vector_str = content[start_index:end_index]
-        # first_vector_list = [float(num) for num in first_vector_str.replace('[', '').replace(']', '').split(',')]
-        print(first_vector_list)
-        cropped_image = crop_image(color_image, first_vector_list)
+        print(first_vector_list[0].int())
+        cropped_image = crop_image(color_image, first_vector_list[0].int())
         cropped_image.save('./img_crop.jpg')
         tesseract_output=os.system('tesseract img_crop.jpg plate -l spa --psm 7')
         if tesseract_output!=0:
@@ -110,13 +99,13 @@ def handle_advance(data):
         with open('plate.txt','r') as file1:
             plate_file = file1.read()
         plate=plate_file.splitlines()[0].strip()
-        x1, y1, x2, y2 = map(int, first_vector_list)
+        x1, y1, x2, y2 = map(int, first_vector_list.tolist()[0])
         result_string=f"[{x1},{y1},{x2},{y2}]"
         output='{{"plate": "{}", "box": {}}}'.format(plate, result_string)
         logger.info(f"Adding notice with payload: '{output}'")
         response = requests.post(rollup_server + "/notice", json={"payload": str2hex(output) })
         logger.info(f"Received notice status {response.status_code} body {response.content}")
-        logger.info(f"Patente encontrada: '{plate}'")
+        logger.info(f"Plate found: '{plate}'")
     except Exception as e:
         status = "reject"
         msg = f"Error processing data {data}\n{traceback.format_exc()}"
