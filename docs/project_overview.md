@@ -2,8 +2,8 @@
 
 ## Introduction
 
-The following project focuses on the development of an advanced image recognition system with artificial intelligence (AI) capabilities, integrated into the Cartesi infrastructure.
-This project is being carried out by a team from [Think and Dev](https://thinkanddev.com/), a pioneering technology company focused on the development of highly complex systems using blockchain and AI.
+The project focuses on the development of an advanced image recognition system with artificial intelligence (AI) capabilities, integrated into the Cartesi infrastructure.
+This project is being carried out by a team from [Think and Dev](https://thinkanddev.com/), a pioneering technology company focused on the development of highly complex systems using different state of the art technologies, like blockchain and AI.
 
 **Whistleblower** is a decentralized application implemented using [Cartesi Rollups](https://github.com/cartesi/rollups) and was developed as part of Cartesi's grants program. You can find our comprehensive proposal by following this [link](https://governance.cartesi.io/t/ai-powered-system-for-detecting-license-plate-violations-on-vehicles/206/1).
 
@@ -19,7 +19,7 @@ We also built a user-friendly interface that integrates the image input into the
 
 Our commitment to transparent documentation will empower developers and enthusiasts within the Cartesi community to comprehend and utilize the technology for diverse applications. By sharing our findings and experiences openly, we aim to catalyze discussions and knowledge-sharing within the Cartesi ecosystem, showcasing its potential for a wide range of projects beyond our traffic violation recognition system.
 
-## How we use Cartesi?
+## How do we use Cartesi?
 
 By leveraging Cartesi’s innovative Virtual Machine, the process of identifying the number plate of violating vehicles through AI models reaches new heights of efficiency and security. By executing the AI model within the Cartesi Virtual Machine, we ensure swift and accurate processing of data, enabling seamless identification of number plates.
 

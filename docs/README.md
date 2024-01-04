@@ -3,7 +3,7 @@
 1. [Project overview](project_overview.md)
    - [Introduction](project_overview.md#introduction)
    - [Project Description](project_overview.md#project-description)
-   - [How we use Cartesi?](project_overview.md#how-we-use-cartesi)
+   - [How do we use Cartesi?](project_overview.md#how-do-we-use-cartesi)
 1. [Develop](develop.md)
    - [How to run Whistleblower locally](develop.md#how-to-run-whistleblower-locally)
    - [How to interact with the Dapp](develop.md#how-to-interact-with-the-dapp)

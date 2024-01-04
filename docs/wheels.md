@@ -18,5 +18,3 @@ pip install -r requirements.txt -i https://think-and-dev.github.io/riscv-python-
 ## How to contribute?
 
 If you're interested in contributing or want more details on how to compile your Python wheels for RISC-V, refer to the instructions in the [Python riscv64 wheels builder](https://github.com/Think-and-Dev/riscv-python-wheels) repository.
-
-Explore the power and flexibility of the RISC-V architecture while enjoying the simplicity of efficiently installing Python libraries in your environment!

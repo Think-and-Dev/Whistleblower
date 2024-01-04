@@ -12,7 +12,7 @@ The steps we followed to process the image plate were as follows:
 
 1. Based on the success of our initial test, we proceeded to implement object detection models within Cartesi. We employed the YOLO (You Only Look Once) algorithm to identify objects in an image, which uses PyTorch. Unfortunately, this method posed problems due to the large number of model parameters.
 
-1. Consequently, we opted to apply the nano version of YOLOX, with a reduced number of parameters of 910,000 (compared to 9 million YOLOXs). This adjustment yielded positive results, allowing us to successfully detect objects in an image.
+1. Consequently, we opted to apply the nano version of YOLOX, with a reduced number of parameters of 910,000 (compared to 9 million of the small YOLOX version). This adjustment yielded positive results, allowing us to successfully detect objects in an image.
 
 1. Confident in our ability to run such models in Cartesi, we embarked on a custom training for the YOLOXn model tailored to patent detection. After training with 2,000 images over 80 epochs, we achieved a model with satisfactory performance.
 
