@@ -21,6 +21,7 @@ RUN find /usr/local/lib -type d -name __pycache__ -exec rm -r {} +
 
 
 COPY ./entrypoint.sh .
-# COPY ./whistleblower.py .
-COPY ./opencv-rvv /usr/local/opencv-rvv
-COPY ./YOLOX .
+
+COPY ./vendor/opencv-rvv /usr/local/opencv-rvv
+COPY ./vendor/yolox .
+COPY ./src .
