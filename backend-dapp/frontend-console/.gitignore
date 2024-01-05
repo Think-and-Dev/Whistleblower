@@ -2,3 +2,5 @@ dist
 generated-src
 node_modules
 .vscode
+yarn-error.log
+test.jpeg
