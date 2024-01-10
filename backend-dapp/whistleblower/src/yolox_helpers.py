@@ -96,7 +96,7 @@ class Predictor(object):
         return bboxes
 
 def process_image(img):
-    exp = get_exp('./yolox_voc_nano.py', None)
+    exp = get_exp('./yolox_exp.py', None)
     file_name = os.path.join(exp.output_dir, exp.exp_name)
     os.makedirs(file_name, exist_ok=True)
     exp.test_conf = 0.25
