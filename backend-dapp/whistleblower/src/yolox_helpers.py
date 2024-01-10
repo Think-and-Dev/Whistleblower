@@ -3,7 +3,6 @@
 # Copyright (c) Megvii, Inc. and its affiliates.
 
 import os
-import time
 
 import cv2
 
@@ -20,7 +19,6 @@ class Predictor(object):
         model,
         exp,
         cls_names=COCO_CLASSES,
-        trt_file=None,
         decoder=None,
         device="cpu",
         fp16=False,
@@ -36,15 +34,6 @@ class Predictor(object):
         self.device = device
         self.fp16 = fp16
         self.preproc = ValTransform(legacy=legacy)
-        if trt_file is not None:
-            from torch2trt import TRTModule
-
-            model_trt = TRTModule()
-            model_trt.load_state_dict(torch.load(trt_file))
-
-            x = torch.ones(1, 3, exp.test_size[0], exp.test_size[1]).cuda()
-            self.model(x)
-            self.model = model_trt
 
     def inference(self, img):
         import numpy as np
@@ -73,7 +62,6 @@ class Predictor(object):
                 img = img.half()  # to FP16
 
         with torch.no_grad():
-            t0 = time.time()
             outputs = self.model(img)
             if self.decoder is not None:
                 outputs = self.decoder(outputs, dtype=outputs.type())
@@ -83,7 +71,7 @@ class Predictor(object):
             )
         return outputs, img_info
 
-    def get_box(self, output, img_info, cls_conf=0.35):
+    def get_box(self, output, img_info):
         ratio = img_info["ratio"]
         img = img_info["raw_img"]
         if output is None:
@@ -109,8 +97,7 @@ def process_image(img):
     ckpt = torch.load(ckpt_file, map_location="cpu")
     model.load_state_dict(ckpt["model"])
     predictor = Predictor(
-        model, exp, COCO_CLASSES, None, None,
-        "cpu"
+        model, exp
     )
     outputs, img_info = predictor.inference(img)
-    return predictor.get_box(outputs[0], img_info, predictor.confthre)
+    return predictor.get_box(outputs[0], img_info)
