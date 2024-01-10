@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 # Copyright (c) Megvii, Inc. and its affiliates.
 
-import argparse
 import os
 import time
 
@@ -10,45 +9,10 @@ import cv2
 
 import torch
 
-from yolox.data.data_augment import ValTransform
-from yolox.data.datasets import COCO_CLASSES
-from yolox.exp import get_exp
-from yolox.utils import  postprocess, vis
-
-IMAGE_EXT = [".jpg", ".jpeg", ".webp", ".bmp", ".png"]
-
-
-def make_parser():
-    parser = argparse.ArgumentParser("YOLOX Demo!")
-    parser.add_argument(
-        "demo", default="image", help="demo type, eg. image, video and webcam"
-    )
-    parser.add_argument("-expn", "--experiment-name", type=str, default=None)
-    parser.add_argument("-n", "--name", type=str, default=None, help="model name")
-
-    parser.add_argument(
-        "--path", default="./assets/dog.jpg", help="path to images or video"
-    )
-    # exp file
-    parser.add_argument(
-        "-f",
-        "--exp_file",
-        default=None,
-        type=str,
-        help="please input your experiment description file",
-    )
-    parser.add_argument("-c", "--ckpt", default=None, type=str, help="ckpt for eval")
-    parser.add_argument(
-        "--device",
-        default="cpu",
-        type=str,
-        help="device to run our model, can either be cpu or gpu",
-    )
-    parser.add_argument("--conf", default=0.3, type=float, help="test conf")
-    parser.add_argument("--nms", default=0.3, type=float, help="test nms threshold")
-    parser.add_argument("--tsize", default=None, type=int, help="test img size")
-    return parser
-
+from vendor.yolox.yolox.data.data_augment import ValTransform
+from vendor.yolox.yolox.data.datasets import COCO_CLASSES
+from vendor.yolox.yolox.exp import get_exp
+from vendor.yolox.yolox.utils import  postprocess, vis
 
 class Predictor(object):
     def __init__(
@@ -131,11 +95,6 @@ class Predictor(object):
 
         return bboxes
 
-
-def image_demo(predictor, img):
-        outputs, img_info = predictor.inference(img)
-        return predictor.get_box(outputs[0], img_info, predictor.confthre)
-
 def process_image(img):
     exp = get_exp('./yolox_voc_nano.py', None)
     file_name = os.path.join(exp.output_dir, exp.exp_name)
@@ -153,49 +112,5 @@ def process_image(img):
         model, exp, COCO_CLASSES, None, None,
         "cpu"
     )
-    return image_demo(predictor, img)
-    
-def main(exp, args):
-    if not args.experiment_name:
-        args.experiment_name = exp.exp_name
-
-    file_name = os.path.join(exp.output_dir, args.experiment_name)
-    os.makedirs(file_name, exist_ok=True)
-
-
-    if args.conf is not None:
-        exp.test_conf = args.conf
-    if args.nms is not None:
-        exp.nmsthre = args.nms
-    if args.tsize is not None:
-        exp.test_size = (args.tsize, args.tsize)
-
-    model = exp.get_model()
-    model.eval()
-
-    if args.ckpt is None:
-        ckpt_file = os.path.join(file_name, "best_ckpt.pth")
-    else:
-        ckpt_file = args.ckpt
-    ckpt = torch.load(ckpt_file, map_location="cpu")
-    model.load_state_dict(ckpt["model"])
-
-    trt_file = None
-    decoder = None
-
-    predictor = Predictor(
-        model, exp, COCO_CLASSES, trt_file, decoder,
-        args.device
-    )
-    if args.demo == "image":
-        image_demo(predictor, args.path)
-    else:
-        print('You must use "image" as the first option for running the plate detection model')
-        exit
-
-
-if __name__ == "__main__":
-    args = make_parser().parse_args()
-    exp = get_exp(args.exp_file, args.name)
-
-    main(exp, args)
+    outputs, img_info = predictor.inference(img)
+    return predictor.get_box(outputs[0], img_info, predictor.confthre)

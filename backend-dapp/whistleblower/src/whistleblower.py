@@ -16,17 +16,11 @@ import os
 import traceback
 import logging
 import requests
+from yolox_helpers import process_image
 
-def get_blue_channel(image):
-    import cv2
-    import numpy as np
-    image_np = np.array(image)
-    b, g, r = cv2.split(image_np)
-    return b
 #--------------------------------------------
 def decode_image(imagen_decodificada):
     from PIL import Image
-    import base64
     import io
     buffer = io.BytesIO(imagen_decodificada)   
     imagen_recuperada = Image.open(buffer)
@@ -39,31 +33,12 @@ def crop_image(image, box):
     cropped_array = image[y1:y2, x1:x2]
     cropped_image = Image.fromarray(cropped_array)
     return cropped_image
-#--------------------------------------------
-def cod_image(blue_image):
-    from PIL import Image
-    import base64
-    import io
-    buffer = io.BytesIO()
-    blue_image.save(buffer, format="JPEG")
-    bytes_de_imagen = buffer.getvalue()
-    buffer.close()
-    imagen_codificada = base64.b64encode(bytes_de_imagen)
-    imagen_codificada_str = imagen_codificada.decode('utf-8')
-    return imagen_codificada_str
-#--------------------------------------------
 
 logging.basicConfig(level="INFO")
 logger = logging.getLogger(__name__)
 
 rollup_server = environ["ROLLUP_HTTP_SERVER_URL"]
 logger.info(f"HTTP rollup_server url is {rollup_server}")
-
-def hex2str(hex):
-    """
-    Decodes a hex string into a regular string
-    """
-    return bytes.fromhex(hex[2:]).decode("utf-8")
 
 def hex2bytes(hex):
     """
@@ -78,9 +53,7 @@ def str2hex(str):
     return "0x" + str.encode("utf-8").hex()
 
 def handle_advance(data):
-    from tools.yolo_plate  import process_image
     logger.info(f"Received advance request data {data}")
-
     status = "accept"
     try:
         input = hex2bytes(data["payload"])
@@ -130,6 +103,7 @@ handlers = {
 finish = {"status": "accept"}
 
 while True:
+    logger.info(f"HTTP rollup_server url is {rollup_server}")
     logger.info("Sending finish")
     response = requests.post(rollup_server + "/finish", json=finish)
     logger.info(f"Received finish status {response.status_code}")
