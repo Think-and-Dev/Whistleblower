@@ -12,4 +12,4 @@
 # specific language governing permissions and limitations under the License.
 
 set -e
-rollup-init python3 whistleblower.py
+rollup-init python3 dapp_entrypoint.py

@@ -5,8 +5,8 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 
-from vendor.yolox.yolox.data import get_yolox_datadir
-from vendor.yolox.yolox.exp import Exp as MyExp
+from yolox.data import get_yolox_datadir
+from yolox.exp import Exp as MyExp
 
 
 class Exp(MyExp):
@@ -25,7 +25,7 @@ class Exp(MyExp):
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
 
     def get_data_loader(self, batch_size, is_distributed, no_aug=False, cache_img=False):
-        from vendor.yolox.yolox.data import (
+        from yolox.data import (
             VOCDetection,
             TrainTransform,
             YoloBatchSampler,
@@ -34,7 +34,7 @@ class Exp(MyExp):
             MosaicDetection,
             worker_init_reset_seed,
         )
-        from vendor.yolox.yolox.utils import (
+        from yolox.utils import (
             wait_for_the_master,
             get_local_rank,
         )
@@ -97,7 +97,7 @@ class Exp(MyExp):
         return train_loader
 
     def get_eval_loader(self, batch_size, is_distributed, testdev=False, legacy=False):
-        from vendor.yolox.yolox.data import VOCDetection, ValTransform
+        from yolox.data import VOCDetection, ValTransform
 
         valdataset = VOCDetection(
             data_dir=os.path.join(get_yolox_datadir(), "VOCdevkit"),
@@ -125,7 +125,7 @@ class Exp(MyExp):
         return val_loader
 
     def get_evaluator(self, batch_size, is_distributed, testdev=False, legacy=False):
-        from vendor.yolox.yolox.evaluators import VOCEvaluator
+        from yolox.evaluators import VOCEvaluator
 
         val_loader = self.get_eval_loader(batch_size, is_distributed, testdev, legacy)
         evaluator = VOCEvaluator(
@@ -146,7 +146,7 @@ class Exp(MyExp):
                     m.eps = 1e-3
                     m.momentum = 0.03
         if "model" not in self.__dict__:
-            from vendor.yolox.yolox.models import YOLOX, YOLOPAFPN, YOLOXHead
+            from yolox.models import YOLOX, YOLOPAFPN, YOLOXHead
             in_channels = [256, 512, 1024]
             # NANO model use depthwise = True, which is main difference.
             backbone = YOLOPAFPN(

@@ -1,26 +1,12 @@
-# Copyright 2022 Cartesi Pte. Ltd.
-#
-# SPDX-License-Identifier: Apache-2.0
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-# this file except in compliance with the License. You may obtain a copy of the
-# License at http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-
-from os import environ
 from PIL import Image
 import os
 import traceback
-import logging
 import requests
+import logging
 from yolox_helpers import process_image
 
 #--------------------------------------------
 def decode_image(imagen_decodificada):
-    from PIL import Image
     import io
     buffer = io.BytesIO(imagen_decodificada)   
     imagen_recuperada = Image.open(buffer)
@@ -34,13 +20,7 @@ def crop_image(image, box):
     cropped_image = Image.fromarray(cropped_array)
     return cropped_image
 
-logging.basicConfig(level="INFO")
-logger = logging.getLogger(__name__)
-
-rollup_server = environ["ROLLUP_HTTP_SERVER_URL"]
-logger.info(f"HTTP rollup_server url is {rollup_server}")
-
-def hex2bytes(hex):
+def hex2bytes(hex:str):
     """
     Decodes a hex string into bytes
     """
@@ -52,7 +32,7 @@ def str2hex(str):
     """
     return "0x" + str.encode("utf-8").hex()
 
-def handle_advance(data):
+def handle_advance(data, rollup_server:str, logger:logging.Logger):
     logger.info(f"Received advance request data {data}")
     status = "accept"
     try:
@@ -62,7 +42,6 @@ def handle_advance(data):
         color_image = decode_image(input)
 
         first_vector_list=process_image(input)
-        print(first_vector_list[0].int())
         cropped_image = crop_image(color_image, first_vector_list[0].int())
         cropped_image.save('./img_crop.jpg')
         tesseract_output=os.system('tesseract img_crop.jpg plate -l spa --psm 7')
@@ -88,30 +67,9 @@ def handle_advance(data):
 
     return status
 
-def handle_inspect(data):
+def handle_inspect(data, rollup_server:str, logger:logging.Logger):
     logger.info(f"Received inspect request data {data}")
     logger.info("Adding report")
     response = requests.post(rollup_server + "/report", json={"payload": data["payload"]})
     logger.info(f"Received report status {response.status_code}")
     return "accept"
-
-handlers = {
-    "advance_state": handle_advance,
-    "inspect_state": handle_inspect,
-}
-
-finish = {"status": "accept"}
-
-while True:
-    logger.info(f"HTTP rollup_server url is {rollup_server}")
-    logger.info("Sending finish")
-    response = requests.post(rollup_server + "/finish", json=finish)
-    logger.info(f"Received finish status {response.status_code}")
-    if response.status_code == 202:
-        logger.info("No pending rollup request, trying again")
-    else:
-        rollup_request = response.json()
-        data = rollup_request["data"]
-        
-        handler = handlers[rollup_request["request_type"]]
-        finish["status"] = handler(rollup_request["data"])

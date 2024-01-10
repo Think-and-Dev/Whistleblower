@@ -9,10 +9,10 @@ import cv2
 
 import torch
 
-from vendor.yolox.yolox.data.data_augment import ValTransform
-from vendor.yolox.yolox.data.datasets import COCO_CLASSES
-from vendor.yolox.yolox.exp import get_exp
-from vendor.yolox.yolox.utils import  postprocess, vis
+from yolox.data.data_augment import ValTransform
+from yolox.data.datasets import COCO_CLASSES
+from yolox.exp import get_exp
+from yolox.utils import  postprocess
 
 class Predictor(object):
     def __init__(
