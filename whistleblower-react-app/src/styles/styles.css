@@ -1,0 +1,14 @@
+/* src/styles.css */
+
+body {
+  background-image: url("../assets/images/whistleblower.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
