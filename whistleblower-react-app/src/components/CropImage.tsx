@@ -25,10 +25,10 @@ const CropImage: React.FC<{
         canvas.width = width;
         canvas.height = height;
 
-        // Dibujar la porción recortada de la imagen en el lienzo
+        // Draw the cut-out portion of the image on the canvas.
         ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
 
-        // Obtener la URL de la imagen recortada desde el lienzo
+        // Get the URL of the cropped image from the canvas
         const croppedImageUrl = canvas.toDataURL("image/jpeg");
 
         setCroppedImage(croppedImageUrl);

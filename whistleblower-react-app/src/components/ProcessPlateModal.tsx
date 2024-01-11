@@ -35,12 +35,6 @@ export default function ProcessPlateModal() {
   const [transactionCompleted, setTransactionCompleted] =
     useState<boolean>(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
-  // const [coordinates, setCoordinates] = useState<number[]>([
-  //   330,
-  //   355,
-  //   558 - 330,
-  //   430 - 355,
-  // ]);
   const [input, setInput] = useState<number | undefined>(0);
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];

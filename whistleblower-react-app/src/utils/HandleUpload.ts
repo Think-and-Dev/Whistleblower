@@ -41,11 +41,8 @@ export default async function HandleUpload(imageUrl: any) {
       console.log(`Se envió la transacción: ${tx.hash}`);
       console.log("Esperando confirmación de la tx...");
       const receipt = await tx.wait(1);
-      // const received = await provider.getTransactionReceipt(tx.hash);
-      // console.log(received);
       const inputKeys = getInputKeys(receipt);
       const event = receipt.events?.find((e) => e.event === "InputAdded");
-      // console.log(inputKeys);
       return { hash: tx.hash, input: inputKeys };
     } catch (error) {
       console.error("Error al enviar la transacción", error);
@@ -59,7 +56,6 @@ export default async function HandleUpload(imageUrl: any) {
       "File successfully submitted. Transaction ID:",
       transactionHash
     );
-    // Resto del código
     return transactionHash;
   } catch (error) {
     console.error("Error en HandleUpload:", error);

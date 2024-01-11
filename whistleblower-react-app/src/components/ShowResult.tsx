@@ -93,11 +93,7 @@ const ShowResult: React.FC<OutputProps> = ({
         <Typography variant="h6" align="center">
           License plate detected:
         </Typography>
-        {/* {result ? ( */}
-        {/* <Typography variant="body1">{result}</Typography> */}
-        {/* ) : ( */}
         <Typography variant="body1">{plate}</Typography>
-        {/* )} */}
       </Paper>
     </Container>
   );

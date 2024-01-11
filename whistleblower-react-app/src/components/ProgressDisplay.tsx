@@ -7,7 +7,6 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import Engineering from "@mui/icons-material/Engineering";
 import { CloudUpload } from "@mui/icons-material";
-// import { Engineering } from "@mui/icons-material";
 
 interface RenderIconsProps {
   loading: boolean;
