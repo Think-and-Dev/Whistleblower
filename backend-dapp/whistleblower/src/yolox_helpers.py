@@ -11,7 +11,8 @@ import torch
 from yolox.data.data_augment import ValTransform
 from yolox.data.datasets import COCO_CLASSES
 from yolox.exp import get_exp
-from yolox.utils import  postprocess
+from yolox.utils import postprocess
+
 
 class Predictor(object):
     def __init__(
@@ -39,27 +40,23 @@ class Predictor(object):
         import numpy as np
         img_info = {"id": 0}
 
-        imgnp=np.frombuffer(img,np.uint8)
-        img=cv2.imdecode(imgnp,cv2.IMREAD_COLOR)
+        imgnp = np.frombuffer(img, np.uint8)
+        img = cv2.imdecode(imgnp, cv2.IMREAD_COLOR)
         img_info["file_name"] = None
-            
-        print(type(img))
+
         height, width = img.shape[:2]
-        print(height,width)
+        print("Image size ({},{})".format(height, width))
         img_info["height"] = height
         img_info["width"] = width
         img_info["raw_img"] = img
 
-        ratio = min(self.test_size[0] / img.shape[0], self.test_size[1] / img.shape[1])
+        ratio = min(self.test_size[0] / img.shape[0],
+                    self.test_size[1] / img.shape[1])
         img_info["ratio"] = ratio
 
         img, _ = self.preproc(img, None, self.test_size)
         img = torch.from_numpy(img).unsqueeze(0)
         img = img.float()
-        if self.device == "gpu":
-            img = img.cuda()
-            if self.fp16:
-                img = img.half()  # to FP16
 
         with torch.no_grad():
             outputs = self.model(img)
@@ -82,6 +79,7 @@ class Predictor(object):
         bboxes /= ratio
 
         return bboxes
+
 
 def process_image(img):
     exp = get_exp('./yolox_exp.py', None)

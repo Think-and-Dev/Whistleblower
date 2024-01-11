@@ -1,16 +1,13 @@
 #!/bin/bash
 
-# Verifica que se haya proporcionado un argumento que sea la ruta de la imagen
+# Checks that an argument has been provided
 if [ $# -ne 1 ]; then
-    echo "Uso: $0 <ruta_de_la_imagen>"
+    echo "Use: yarn send:image <path_to_image>"
     exit 1
 fi
 
-# Captura la ruta de la imagen del primer argumento
-ruta_imagen="$1"
+# Capture the path of the image of the first argument
+image_path="$1"
 
-# Ejecuta el comando yarn con la salida del script de Python como argumento
-yarn start input send_file --path "$ruta_imagen"
-
-## Ejecutar asi:
-##      ./send_image.sh '../pruebas_opencv/perrito.jpg'
+# Execute the yarn command with the output of the Python script as argument
+yarn start input send_file --path "$image_path"
