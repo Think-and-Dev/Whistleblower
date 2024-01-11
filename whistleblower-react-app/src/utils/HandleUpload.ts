@@ -2,7 +2,7 @@ import { ContractReceipt, ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { InputBox__factory } from "@cartesi/rollups";
 import { InputAddedEvent } from "@cartesi/rollups/dist/src/types/contracts/inputs/IInputBox";
-import { InputKeys } from "../commands/types";
+import { InputKeys } from "../../src/types";
 
 const HARDHAT_LOCALHOST_RPC_URL = "http://localhost:8545";
 const HARDHAT_DEFAULT_MNEMONIC =
@@ -10,6 +10,7 @@ const HARDHAT_DEFAULT_MNEMONIC =
 const INPUTBOX_ADDRESS = "0x59b22D57D4f067708AB0c00552767405926dc768";
 const DAPP_ADDRESS = "0x70ac08179605af2d9e75782b8decdd3c22aa4d0c";
 const accountIndex = 0;
+
 export const getInputKeys = (receipt: ContractReceipt): InputKeys => {
   // get InputAddedEvent from transaction receipt
   const event = receipt.events?.find((e) => e.event === "InputAdded");
@@ -42,7 +43,7 @@ export default async function HandleUpload(imageUrl: any) {
       console.log("Esperando confirmación de la tx...");
       const receipt = await tx.wait(1);
       const inputKeys = getInputKeys(receipt);
-      const event = receipt.events?.find((e) => e.event === "InputAdded");
+      // const event = receipt.events?.find((e) => e.event === "InputAdded");
       return { hash: tx.hash, input: inputKeys };
     } catch (error) {
       console.error("Error al enviar la transacción", error);
