@@ -2,8 +2,10 @@
 
 To run Whistleblower locally, follow the steps below:
 
-1. Clone the [Whistpleblower](https://github.com/Think-and-Dev/Whistleblower.git) repository.
-2. Navigate to the `Whistpleblower/backend-dapp/whistleblower`
+1. Clone the [Whistleblower](https://github.com/Think-and-Dev/Whistleblower.git) repository.
+2. Navigate to the `Whistleblower/backend-dapp/whistleblower`
+>[!NOTE]
+>In order to run the backend DApp, openCV library must be compiled for RISC-V and copied into the backend file system. Since compiling openCV could take several hours, an already compiled version of openCV can be found in the `vendor` folder. More information about the openCV compilation process and the steps to follow, can be found [here](https://medium.com/cartesi/guest-post-how-opencv-cross-compiles-in-the-blockchain-os-79a9eba6108b).
 3. Build de Whistleblower Dapp
 
 ```
@@ -78,8 +80,8 @@ The response should include a `payload` key, where the value encompasses the ide
 1. Navigate to the `Whistleblower/frontend` directory and build the frontend application
 
 ```
-npm install
-npm start
+yarn
+yarn start
 ```
 
 2. To interact with the application, open your web browser and enter `localhost:3000` in the address bar.

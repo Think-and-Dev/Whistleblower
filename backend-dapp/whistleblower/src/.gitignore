@@ -1,0 +1,4 @@
+*.jpg
+plate.txt
+__pycache__
+YOLOX_outputs

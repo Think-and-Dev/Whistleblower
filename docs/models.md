@@ -2,7 +2,7 @@
 
 The **Whistleblower** Dapp uses a license plate recognition model that was built by leveraging the synergistic potential of OpenCV, YOLO and optical character recognition (OCR). OpenCV is a versatile open source library for computer vision and image processing, which endows the model with efficient image manipulation, key feature extraction and vital preprocessing capabilities. YOLO (You Only Look Once) is a state-of-the-art object detection framework, renowned for its real-time accuracy, capable of rapidly identifying license plates in images. The integration of OCR further enhances the model's ability to accurately recognize and decode license plate characters, ensuring complete and fast results.
 
-## Licence plate detection (YOLOX)
+## License plate detection (YOLOX)
 
 For object detection we use [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX), an improved version of the YOLO architecture that addresses previous limitations. We implement the YOLOX-Nano variant, designed to be more efficient and lightweight.
 
