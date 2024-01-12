@@ -39,8 +39,8 @@ export default async function HandleUpload(imageUrl: any) {
         ? imageUrl
         : ethers.utils.toUtf8Bytes(imageUrl);
       const tx = await inputBox.addInput(DAPP_ADDRESS, inputBytes);
-      console.log(`Se envió la transacción: ${tx.hash}`);
-      console.log("Esperando confirmación de la tx...");
+      console.log(`Transaction sent: ${tx.hash}`);
+      console.log("Waiting tx confirmation...");
       const receipt = await tx.wait(1);
       const inputKeys = getInputKeys(receipt);
       // const event = receipt.events?.find((e) => e.event === "InputAdded");

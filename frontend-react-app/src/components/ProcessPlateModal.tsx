@@ -67,7 +67,6 @@ export default function ProcessPlateModal() {
       const bytes = new Uint8Array(fileContent);
 
       const { hash, input } = await HandleUpload(bytes);
-      console.log("File successfully submitted. Transaction ID:", hash);
 
       setTransactionId(hash);
       setTransactionCompleted(true);
@@ -83,7 +82,7 @@ export default function ProcessPlateModal() {
   const readFileAsArrayBuffer = (file: File | null): Promise<ArrayBuffer> => {
     return new Promise((resolve, reject) => {
       if (!file) {
-        reject(new Error("No se ha seleccionado ningún archivo"));
+        reject(new Error("No file selected"));
         return;
       }
 
@@ -93,12 +92,12 @@ export default function ProcessPlateModal() {
         if (event.target && event.target.result) {
           resolve(event.target.result as ArrayBuffer);
         } else {
-          reject(new Error("Error al leer el archivo"));
+          reject(new Error("Error reading the file"));
         }
       };
 
       reader.onerror = () => {
-        reject(new Error("Error al leer el archivo"));
+        reject(new Error("Error reading the file"));
       };
 
       reader.readAsArrayBuffer(file);
