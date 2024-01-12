@@ -105,7 +105,14 @@ export default function ProcessPlateModal() {
     });
   };
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/png": [".png"],
+      "image/jpeg": [".jpeg", ".jpg"],
+    },
+    maxFiles: 1,
+  });
 
   return (
     <ThemeProvider theme={theme}>
