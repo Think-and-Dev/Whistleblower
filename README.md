@@ -4,7 +4,7 @@ The application consists of a chain-verifiable image recognition system using AI
 
 The main goal of our project is to improve traffic safety by automating license plate detection and traffic violation identification using blockchain and AI technology.
 
-This is a project initially thought as a possible application of cartesi, and allows interested parties to look into how cartesi technology can be used.
+This is a project initially thought as a possible application of Cartesi, and allows interested parties to look into how Cartesi technology can be used.
 
 ## Interacting with the application
 
@@ -19,7 +19,7 @@ If you want to report a violation using the whistleblower application, follow th
 
 <img src="./docs/assets/images/app.png" alt="image" width="400" />
 
-Following these steps, the image is sent to the cartesi machine, where artificial intelligence models are used to detect the position of the license plate and extract the characters it contains.
+Following these steps, the image is sent to the Cartesi machine, where artificial intelligence models are used to detect the position of the license plate and extract the characters it contains.
 Once the request is processed, the cropped license plate image and the corresponding text of the characters found are returned to the user via the app.
 
 Documentation for developers available [here](./docs/README.md)
