@@ -1,4 +1,4 @@
-## Índex
+## Index
 
 1. [Project overview](project_overview.md)
    - [Introduction](project_overview.md#introduction)
@@ -11,9 +11,9 @@
      - [React frontend](develop.md#react-frontend)
 1. [Models](models.md)
    - [AI models](models.md#ai-models)
-   - [Licence plate detection](models.md#licence-plate-detection-yolox)
+   - [License plate detection](models.md#licence-plate-detection-yolox)
    - [Character recognition](models.md#character-recognition)
 1. [Building Wheels for RISC-V](wheels.md)
    - [How to use?](wheels.md#how-to-use)
-   - [How to contrubute?](wheels.md#how-to-contribute)
+   - [How to contribute?](wheels.md#how-to-contribute)
 1. [Research](research.md)
