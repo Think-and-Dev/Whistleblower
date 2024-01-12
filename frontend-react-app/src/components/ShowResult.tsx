@@ -36,10 +36,6 @@ const ShowResult: React.FC<OutputProps> = ({
   const [plate, setPlate] = useState<string | undefined>();
   const [box, setBox] = useState<number[] | undefined>();
 
-  console.log(`The input index is: ${inputIndex}`);
-  // const index = input;
-  // ? input : "undefined";
-  // console.log(index);
   const { loading, error, data, stopPolling, startPolling } = useQuery(
     GET_DATA,
     {
@@ -48,10 +44,8 @@ const ShowResult: React.FC<OutputProps> = ({
   );
   useEffect(() => {
     startPolling(20000);
-    console.log(`Polling started. Loading: ${loading}`);
     return () => {
       stopPolling();
-      console.log("Polling stopped");
     };
   }, [stopPolling, startPolling, loading]);
   useEffect(() => {
@@ -61,13 +55,11 @@ const ShowResult: React.FC<OutputProps> = ({
     const payloadHex = data.input?.notices?.edges[0]?.node?.payload;
     if (payloadHex) {
       const payload = ethers.utils.toUtf8String(payloadHex);
-      console.log(payload);
       const rta = JSON.parse(payload);
       const getPlate = () =>
         rta && rta.plate !== "" ? rta.plate : "No plate detected";
       setPlate(getPlate());
       setBox(rta.box);
-      console.log(rta.box);
       stopPolling();
       setProgress(100);
     }

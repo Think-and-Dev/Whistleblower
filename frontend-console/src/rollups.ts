@@ -13,38 +13,34 @@ import fs from "fs";
 import { Provider } from "@ethersproject/providers";
 import { Signer } from "ethers";
 import {
-    IInputBox,
-    IInputBox__factory,
-    ICartesiDApp,
-    ICartesiDApp__factory,
-    IERC20Portal,
-    IERC20Portal__factory,
-    IERC721Portal,
-    IERC721Portal__factory,
+  IInputBox,
+  IInputBox__factory,
+  ICartesiDApp,
+  ICartesiDApp__factory,
+  IERC20Portal,
+  IERC20Portal__factory,
+  IERC721Portal,
+  IERC721Portal__factory,
 } from "@cartesi/rollups";
 import { Argv } from "yargs";
 import { networks } from "./networks";
 import { Deployment, Contract } from "./abi";
-import {
-    readAddressFromFile,
-    readAllContractsFromDir
-} from "./utils"
-
+import { readAddressFromFile, readAllContractsFromDir } from "./utils";
+const DEPLOYMENT_DIR = "../backend-dapp/deployments";
 export interface Args {
-    dapp: string;
-    address?: string;
-    addressFile?: string;
-    deploymentFile?: string;
+  dapp: string;
+  address?: string;
+  addressFile?: string;
+  deploymentFile?: string;
 }
 
 interface Contracts {
-    dapp: string;
-    inputContract: IInputBox;
-    outputContract: ICartesiDApp;
-    erc20Portal: IERC20Portal;
-    erc721Portal: IERC721Portal;
-    deployment: Deployment
-
+  dapp: string;
+  inputContract: IInputBox;
+  outputContract: ICartesiDApp;
+  erc20Portal: IERC20Portal;
+  erc721Portal: IERC721Portal;
+  deployment: Deployment;
 }
 
 /**
@@ -53,26 +49,25 @@ interface Contracts {
  * @returns Argv instance with all options
  */
 export const builder = <T>(yargs: Argv<T>): Argv<Args & T> => {
-    return yargs
-        .option("dapp", {
-            describe: "DApp name",
-            type: "string",
-            default: "dapp",
-        })
-        .option("address", {
-            describe: "Rollups contract address",
-            type: "string",
-        })
-        .option("addressFile", {
-            describe: "File with rollups contract address",
-            type: "string",
-        })
-        .option("deploymentFile", {
-            describe: "JSON file with deployment of rollups contracts",
-            type: "string",
-        });
+  return yargs
+    .option("dapp", {
+      describe: "DApp name",
+      type: "string",
+      default: "dapp",
+    })
+    .option("address", {
+      describe: "Rollups contract address",
+      type: "string",
+    })
+    .option("addressFile", {
+      describe: "File with rollups contract address",
+      type: "string",
+    })
+    .option("deploymentFile", {
+      describe: "JSON file with deployment of rollups contracts",
+      type: "string",
+    });
 };
-
 
 /**
  * Read address from file located at deployment path
@@ -81,47 +76,50 @@ export const builder = <T>(yargs: Argv<T>): Argv<Args & T> => {
  * @returns address or undefined if can't resolve network name of file does not exist
  */
 const readDApp = (
-    dapp: string | undefined,
-    chainId: number
+  dapp: string | undefined,
+  chainId: number
 ): string | undefined => {
-    const network = networks[chainId];
-    if (network && dapp) {
-        return readAddressFromFile(`../deployments/${network.name}/${dapp}.json`);
-    }
+  const network = networks[chainId];
+  if (network && dapp) {
+    return readAddressFromFile(
+      `${DEPLOYMENT_DIR}/${network.name}/${dapp}.json`
+    );
+  }
 };
 
-
 const readDeployment = (chainId: number, args: Args): Deployment => {
-    if (args.deploymentFile) {
-        const deployment = require(args.deploymentFile);
-        if (!deployment) {
-            throw new Error(
-                `rollups deployment '${args.deploymentFile}' not found`
-            );
-        }
-        return deployment as Deployment;
-    } else {
-        const network = networks[chainId];
-        if (!network) {
-            throw new Error(`unsupported chain ${chainId}`);
-        }
-
-        if (network.name === "localhost") {
-
-            const contracts: Record<string, Contract> =
-                readAllContractsFromDir("../deployments/localhost",
-                    "../common-contracts/deployments/localhost");
-
-            const deployment = { chainId: chainId.toString(), name: "localhost", contracts: contracts };
-            return deployment as Deployment;
-        }
-
-        const deployment = require(`@cartesi/rollups/export/abi/${network.name}.json`);
-        if (!deployment) {
-            throw new Error(`rollups not deployed to network ${network.name}`);
-        }
-        return deployment as Deployment;
+  if (args.deploymentFile) {
+    const deployment = require(args.deploymentFile);
+    if (!deployment) {
+      throw new Error(`rollups deployment '${args.deploymentFile}' not found`);
     }
+    return deployment as Deployment;
+  } else {
+    const network = networks[chainId];
+    if (!network) {
+      throw new Error(`unsupported chain ${chainId}`);
+    }
+
+    if (network.name === "localhost") {
+      const contracts: Record<string, Contract> = readAllContractsFromDir(
+        `${DEPLOYMENT_DIR}/localhost`,
+        "../common-contracts/deployments/localhost"
+      );
+
+      const deployment = {
+        chainId: chainId.toString(),
+        name: "localhost",
+        contracts: contracts,
+      };
+      return deployment as Deployment;
+    }
+
+    const deployment = require(`@cartesi/rollups/export/abi/${network.name}.json`);
+    if (!deployment) {
+      throw new Error(`rollups not deployed to network ${network.name}`);
+    }
+    return deployment as Deployment;
+  }
 };
 
 /**
@@ -132,46 +130,42 @@ const readDeployment = (chainId: number, args: Args): Deployment => {
  * @returns Connected rollups contracts
  */
 export const rollups = async (
-    chainId: number,
-    provider: Provider | Signer,
-    args: Args
+  chainId: number,
+  provider: Provider | Signer,
+  args: Args
 ): Promise<Contracts> => {
-    const address =
-        args.address ||
-        readAddressFromFile(args.addressFile) ||
-        readDApp(args.dapp, chainId);
+  const address =
+    args.address ||
+    readAddressFromFile(args.addressFile) ||
+    readDApp(args.dapp, chainId);
 
-    if (!address) {
-        throw new Error("unable to resolve DApp address");
-    }
+  if (!address) {
+    throw new Error("unable to resolve DApp address");
+  }
 
-    const deployment = readDeployment(chainId, args);
-    const InputBox = deployment.contracts["InputBox"];
-    const ERC20Portal = deployment.contracts["ERC20Portal"];
-    const ERC721Portal = deployment.contracts["ERC721Portal"];
+  const deployment = readDeployment(chainId, args);
+  const InputBox = deployment.contracts["InputBox"];
+  const ERC20Portal = deployment.contracts["ERC20Portal"];
+  const ERC721Portal = deployment.contracts["ERC721Portal"];
 
-    // connect to contracts
-    const inputContract = IInputBox__factory.connect(
-        InputBox.address,
-        provider
-    );
-    const outputContract = ICartesiDApp__factory.connect(address, provider);
-    const erc20Portal = IERC20Portal__factory.connect(
-        ERC20Portal.address,
-        provider
-    );
-    const erc721Portal = IERC721Portal__factory.connect(
-        ERC721Portal.address,
-        provider
-    );
+  // connect to contracts
+  const inputContract = IInputBox__factory.connect(InputBox.address, provider);
+  const outputContract = ICartesiDApp__factory.connect(address, provider);
+  const erc20Portal = IERC20Portal__factory.connect(
+    ERC20Portal.address,
+    provider
+  );
+  const erc721Portal = IERC721Portal__factory.connect(
+    ERC721Portal.address,
+    provider
+  );
 
-
-    return {
-        dapp: address,
-        inputContract,
-        outputContract,
-        erc20Portal,
-        erc721Portal,
-        deployment
-    };
+  return {
+    dapp: address,
+    inputContract,
+    outputContract,
+    erc20Portal,
+    erc721Portal,
+    deployment,
+  };
 };
