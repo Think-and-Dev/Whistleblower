@@ -12,8 +12,8 @@ If you want to report a violation using the whistleblower application, follow th
 
 1. Take a photo of the violating vehicle using your mobile phone.
 2. Go to the app website to access the application.
-   > [!WARNING]
-   > The app is currently not deployed and can only be used by running it locally.
+>[!WARNING]
+>The app is currently not deployed and can only be used by running it locally.
 3. Use the "SELECT IMAGE" button to choose the photo of the vehicle you want to report.
 4. Click on the "GET PLATE!" button to send the image for processing.
 
