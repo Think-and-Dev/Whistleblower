@@ -11,7 +11,7 @@
      - [React frontend](develop.md#react-frontend)
 1. [Models](models.md)
    - [AI models](models.md#ai-models)
-   - [License plate detection](models.md#licence-plate-detection-yolox)
+   - [License plate detection](models.md#license-plate-detection-yolox)
    - [Character recognition](models.md#character-recognition)
 1. [Building Wheels for RISC-V](wheels.md)
    - [How to use?](wheels.md#how-to-use)

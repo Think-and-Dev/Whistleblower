@@ -76,8 +76,8 @@ The response should include a `payload` key, where the value encompasses the ide
 1. Navigate to the `Whistleblower/frontend` directory and build the frontend application
 
 ```
-npm install
-npm start
+yarn
+yarn start
 ```
 
 2. To interact with the application, open your web browser and enter `localhost:3000` in the address bar.
